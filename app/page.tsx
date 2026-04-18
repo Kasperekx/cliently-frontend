@@ -1,5 +1,4 @@
 import Image from "next/image";
-const x: number = "this is not a number";
 
 export default function Home() {
   return (
