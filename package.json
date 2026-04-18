@@ -6,7 +6,12 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "prepare": "husky"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,mts,mjs,json,css,md}": "prettier --write",
+    "*.{ts,tsx,mts,mjs}": "eslint --fix"
   },
   "dependencies": {
     "@phosphor-icons/react": "^2.1.10",
