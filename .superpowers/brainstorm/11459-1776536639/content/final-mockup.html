@@ -1,0 +1,164 @@
+<h2>Sign Up — finalny wygląd</h2>
+<p class="subtitle">Font: Inter · Layout: Centered Card · RSC mock</p>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+  .preview-wrap {
+    background: oklch(0.985 0.005 85);
+    border-radius: 10px;
+    border: 1px solid oklch(0.92 0.005 85);
+    overflow: hidden;
+    min-height: 480px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 24px;
+    padding: 40px 20px;
+    font-family: 'Inter', sans-serif;
+  }
+
+  .p-logo {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    color: oklch(0.62 0.07 150);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .p-card {
+    background: white;
+    border: 1px solid oklch(0.92 0.005 85);
+    border-radius: 6px;
+    width: 360px;
+    overflow: hidden;
+  }
+
+  .p-card-header {
+    padding: 24px 24px 0;
+    margin-bottom: 20px;
+  }
+
+  .p-card-title {
+    font-size: 15px;
+    font-weight: 600;
+    color: oklch(0.18 0.01 85);
+    margin-bottom: 4px;
+  }
+
+  .p-card-desc {
+    font-size: 11px;
+    color: oklch(0.5 0.01 85);
+    line-height: 1.5;
+  }
+
+  .p-card-content {
+    padding: 0 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .p-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .p-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: oklch(0.25 0.01 85);
+  }
+
+  .p-input {
+    height: 34px;
+    border: 1px solid oklch(0.92 0.005 85);
+    border-radius: 4px;
+    background: oklch(0.985 0.005 85);
+    padding: 0 10px;
+    font-size: 12px;
+    color: oklch(0.5 0.01 85);
+    font-family: 'Inter', sans-serif;
+    display: flex;
+    align-items: center;
+  }
+
+  .p-btn {
+    width: 100%;
+    height: 36px;
+    background: oklch(0.18 0.01 85);
+    color: oklch(0.985 0.005 85);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: 4px;
+    font-family: 'Inter', sans-serif;
+    cursor: pointer;
+  }
+
+  .p-btn:hover {
+    background: oklch(0.28 0.01 85);
+  }
+
+  .p-card-footer {
+    border-top: 1px solid oklch(0.92 0.005 85);
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .p-footer-text {
+    font-size: 11px;
+    color: oklch(0.5 0.01 85);
+  }
+
+  .p-footer-link {
+    font-size: 11px;
+    font-weight: 500;
+    color: oklch(0.62 0.07 150);
+    margin-left: 4px;
+    text-decoration: none;
+  }
+
+  .section { margin-top: 8px; }
+</style>
+
+<div class="section">
+  <div class="mockup">
+    <div class="mockup-header">Preview: Sign Up · /sign-up · (auth)/layout</div>
+    <div class="mockup-body" style="padding: 0;">
+      <div class="preview-wrap">
+        <div class="p-logo">cliently</div>
+        <div class="p-card">
+          <div class="p-card-header">
+            <div class="p-card-title">Utwórz konto</div>
+            <div class="p-card-desc">Zacznij za darmo. Bez karty kredytowej.</div>
+          </div>
+          <div class="p-card-content">
+            <div class="p-field">
+              <div class="p-label">Email</div>
+              <div class="p-input">jan@firma.pl</div>
+            </div>
+            <div class="p-field">
+              <div class="p-label">Hasło</div>
+              <div class="p-input">••••••••••</div>
+            </div>
+            <div class="p-btn">Zarejestruj się</div>
+          </div>
+          <div class="p-card-footer">
+            <span class="p-footer-text">Masz już konto?</span>
+            <a class="p-footer-link" href="#">Zaloguj się</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,229 @@
+<h2>Sign Up — Layout</h2>
+<p class="subtitle">Wybierz layout dla widoku rejestracji (Step 1: Email + Hasło)</p>
+
+<style>
+  .mock-page {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #faf9f7;
+    font-family: 'JetBrains Mono', monospace;
+    height: 340px;
+    position: relative;
+  }
+  .mock-page-dark {
+    background: oklch(0.14 0.008 85);
+    border-color: oklch(1 0 0 / 8%);
+  }
+  .m-center {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+  }
+  .m-card {
+    background: white;
+    border: 1px solid #e8e6e1;
+    border-radius: 4px;
+    padding: 28px 32px;
+    width: 300px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+  }
+  .m-logo {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: oklch(0.62 0.07 150);
+    text-transform: uppercase;
+    margin-bottom: 20px;
+  }
+  .m-title { font-size: 14px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
+  .m-sub { font-size: 10px; color: #888; margin-bottom: 18px; }
+  .m-field { margin-bottom: 10px; }
+  .m-label { font-size: 9px; color: #555; margin-bottom: 3px; }
+  .m-input {
+    width: 100%;
+    height: 28px;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    background: #f9f8f7;
+    box-sizing: border-box;
+    display: flex; align-items: center; padding: 0 8px;
+    font-size: 9px; color: #bbb;
+  }
+  .m-btn {
+    width: 100%;
+    height: 30px;
+    background: oklch(0.18 0.01 85);
+    color: white;
+    border-radius: 3px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 500; margin-top: 14px;
+  }
+  .m-steps {
+    display: flex; gap: 6px; margin-bottom: 16px;
+  }
+  .m-step {
+    height: 2px; flex: 1; background: #e8e6e1; border-radius: 1px;
+  }
+  .m-step.active { background: oklch(0.62 0.07 150); }
+  .m-footer { font-size: 9px; color: #aaa; text-align: center; margin-top: 12px; }
+  /* Split layout */
+  .m-split { display: flex; height: 100%; }
+  .m-left {
+    width: 45%;
+    background: oklch(0.18 0.01 85);
+    display: flex; flex-direction: column;
+    align-items: flex-start; justify-content: flex-end;
+    padding: 24px;
+  }
+  .m-left-logo { font-size: 11px; font-weight: 600; color: oklch(0.62 0.07 150); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: auto; margin-top: 16px; }
+  .m-left-quote { font-size: 10px; color: oklch(0.96 0.005 85); line-height: 1.6; margin-bottom: 8px; }
+  .m-left-tag { font-size: 9px; color: oklch(0.5 0.05 150); }
+  .m-right {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    background: #faf9f7;
+    padding: 24px;
+  }
+  .m-right-card { width: 100%; }
+  /* Minimal full-page */
+  .m-minimal {
+    height: 100%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 0;
+  }
+  .m-minimal-logo {
+    font-size: 11px; font-weight: 600;
+    color: oklch(0.62 0.07 150);
+    text-transform: uppercase; letter-spacing: 0.08em;
+    margin-bottom: 32px;
+  }
+  .m-minimal-card {
+    width: 280px;
+  }
+  .m-minimal-nav {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 36px;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    border-bottom: 1px solid #e8e6e1;
+  }
+  .m-nav-logo { font-size: 10px; font-weight: 600; color: oklch(0.62 0.07 150); text-transform: uppercase; letter-spacing: 0.06em; }
+  .m-nav-link { font-size: 9px; color: #888; }
+</style>
+
+<div class="cards">
+
+  <!-- Option A: Centered Card -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 12px; background: #f5f4f2;">
+      <div class="mock-page">
+        <div class="m-center">
+          <div class="m-card">
+            <div class="m-logo">cliently</div>
+            <div class="m-steps">
+              <div class="m-step active"></div>
+              <div class="m-step"></div>
+            </div>
+            <div class="m-title">Utwórz konto</div>
+            <div class="m-sub">Krok 1 z 2 — dane logowania</div>
+            <div class="m-field">
+              <div class="m-label">Email</div>
+              <div class="m-input">jan@firma.pl</div>
+            </div>
+            <div class="m-field">
+              <div class="m-label">Hasło</div>
+              <div class="m-input">••••••••</div>
+            </div>
+            <div class="m-btn">Kontynuuj →</div>
+            <div class="m-footer">Masz już konto? Zaloguj się</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Centered Card</h3>
+      <p>Klasyczny, skupiony. Karta na środku, czyste tło. Prosto i profesjonalnie.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Split Panel -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 12px; background: #f5f4f2;">
+      <div class="mock-page">
+        <div class="m-split">
+          <div class="m-left">
+            <div class="m-left-logo">cliently</div>
+            <div>
+              <div class="m-left-quote">"Zarządzaj klientami<br>i projektami w jednym<br>miejscu."</div>
+              <div class="m-left-tag">Wypróbuj bezpłatnie</div>
+            </div>
+          </div>
+          <div class="m-right">
+            <div class="m-right-card">
+              <div class="m-steps">
+                <div class="m-step active"></div>
+                <div class="m-step"></div>
+              </div>
+              <div class="m-title">Utwórz konto</div>
+              <div class="m-sub">Krok 1 z 2 — dane logowania</div>
+              <div class="m-field">
+                <div class="m-label">Email</div>
+                <div class="m-input">jan@firma.pl</div>
+              </div>
+              <div class="m-field">
+                <div class="m-label">Hasło</div>
+                <div class="m-input">••••••••</div>
+              </div>
+              <div class="m-btn">Kontynuuj →</div>
+              <div class="m-footer">Masz już konto? Zaloguj się</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Split Panel</h3>
+      <p>Lewa strona: marka/hasło na ciemnym tle. Prawa: formularz. Popularny w SaaS.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Minimal Full-Page -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 12px; background: #f5f4f2;">
+      <div class="mock-page" style="position: relative;">
+        <div class="m-minimal-nav">
+          <div class="m-nav-logo">cliently</div>
+          <div class="m-nav-link">Zaloguj się</div>
+        </div>
+        <div class="m-minimal" style="margin-top: 36px;">
+          <div class="m-steps" style="width: 280px; margin-bottom: 24px;">
+            <div class="m-step active"></div>
+            <div class="m-step"></div>
+          </div>
+          <div class="m-minimal-card">
+            <div class="m-title" style="font-size: 16px; margin-bottom: 6px;">Utwórz konto</div>
+            <div class="m-sub" style="margin-bottom: 20px;">Krok 1 z 2 — dane logowania</div>
+            <div class="m-field">
+              <div class="m-label">Email</div>
+              <div class="m-input">jan@firma.pl</div>
+            </div>
+            <div class="m-field">
+              <div class="m-label">Hasło</div>
+              <div class="m-input">••••••••</div>
+            </div>
+            <div class="m-btn">Kontynuuj →</div>
+            <div class="m-footer">Masz już konto? Zaloguj się</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Minimal z nawigacją</h3>
+      <p>Top nav z logo i linkiem do logowania. Formularz wycentrowany bez karty. Nowoczesny, lekki.</p>
+    </div>
+  </div>
+
+</div>

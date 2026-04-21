@@ -1,0 +1,127 @@
+<h2>Sign Up — Layout (bez multistep)</h2>
+<p class="subtitle">Font: Inter. Step indicator pojawi się dopiero po kliknięciu "Zarejestruj się".</p>
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+  .mock-page {
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    overflow: hidden;
+    background: oklch(0.985 0.005 85);
+    font-family: 'Inter', sans-serif;
+    height: 320px;
+    position: relative;
+  }
+  .m-center { display: flex; align-items: center; justify-content: center; height: 100%; }
+  .m-card {
+    background: white;
+    border: 1px solid oklch(0.92 0.005 85);
+    border-radius: 4px;
+    padding: 28px 32px;
+    width: 300px;
+  }
+  .m-logo { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: oklch(0.62 0.07 150); text-transform: uppercase; margin-bottom: 22px; }
+  .m-title { font-size: 15px; font-weight: 600; color: oklch(0.18 0.01 85); margin-bottom: 4px; }
+  .m-sub { font-size: 10px; color: oklch(0.5 0.01 85); margin-bottom: 20px; line-height: 1.5; }
+  .m-field { margin-bottom: 10px; }
+  .m-label { font-size: 9px; font-weight: 500; color: oklch(0.4 0.01 85); margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.04em; }
+  .m-input { width: 100%; height: 30px; border: 1px solid oklch(0.92 0.005 85); border-radius: 3px; background: oklch(0.985 0.005 85); box-sizing: border-box; display: flex; align-items: center; padding: 0 10px; font-size: 10px; color: #bbb; }
+  .m-btn { width: 100%; height: 32px; background: oklch(0.18 0.01 85); color: oklch(0.985 0.005 85); border-radius: 3px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 500; margin-top: 16px; }
+  .m-footer { font-size: 9px; color: oklch(0.5 0.01 85); text-align: center; margin-top: 14px; }
+  .m-footer span { color: oklch(0.62 0.07 150); font-weight: 500; }
+  /* Split */
+  .m-split { display: flex; height: 100%; }
+  .m-left { width: 44%; background: oklch(0.18 0.01 85); display: flex; flex-direction: column; padding: 22px; }
+  .m-left-logo { font-size: 11px; font-weight: 600; color: oklch(0.62 0.07 150); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: auto; }
+  .m-left-quote { font-size: 10px; color: oklch(0.96 0.005 85); line-height: 1.65; margin-bottom: 6px; }
+  .m-left-tag { font-size: 9px; color: oklch(0.5 0.05 150); }
+  .m-right { flex: 1; display: flex; align-items: center; justify-content: center; background: oklch(0.985 0.005 85); padding: 20px; }
+  /* Minimal nav */
+  .m-nav { position: absolute; top: 0; left: 0; right: 0; height: 38px; display: flex; align-items: center; justify-content: space-between; padding: 0 18px; border-bottom: 1px solid oklch(0.92 0.005 85); background: white; }
+  .m-nav-logo { font-size: 11px; font-weight: 600; color: oklch(0.62 0.07 150); text-transform: uppercase; letter-spacing: 0.06em; }
+  .m-nav-link { font-size: 9px; color: oklch(0.5 0.01 85); }
+  .m-below-nav { padding-top: 38px; height: 100%; display: flex; align-items: center; justify-content: center; }
+</style>
+
+<div class="cards">
+
+  <!-- Option A: Centered Card -->
+  <div class="card" data-choice="a" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 12px; background: #f0ede8;">
+      <div class="mock-page">
+        <div class="m-center">
+          <div class="m-card">
+            <div class="m-logo">cliently</div>
+            <div class="m-title">Utwórz konto</div>
+            <div class="m-sub">Zacznij za darmo. Bez karty kredytowej.</div>
+            <div class="m-field"><div class="m-label">Email</div><div class="m-input">jan@firma.pl</div></div>
+            <div class="m-field"><div class="m-label">Hasło</div><div class="m-input">••••••••</div></div>
+            <div class="m-btn">Zarejestruj się</div>
+            <div class="m-footer">Masz już konto? <span>Zaloguj się</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>A — Centered Card</h3>
+      <p>Logo + karta na środku ciepłego tła. Prosty, skupiony, bez rozpraszaczy.</p>
+    </div>
+  </div>
+
+  <!-- Option B: Split Panel -->
+  <div class="card" data-choice="b" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 12px; background: #f0ede8;">
+      <div class="mock-page">
+        <div class="m-split">
+          <div class="m-left">
+            <div class="m-left-logo">cliently</div>
+            <div>
+              <div class="m-left-quote">"Zarządzaj klientami<br>i projektami w jednym<br>miejscu."</div>
+              <div class="m-left-tag">Dołącz do 1200+ firm</div>
+            </div>
+          </div>
+          <div class="m-right">
+            <div style="width: 100%;">
+              <div class="m-title">Utwórz konto</div>
+              <div class="m-sub">Zacznij za darmo. Bez karty kredytowej.</div>
+              <div class="m-field"><div class="m-label">Email</div><div class="m-input">jan@firma.pl</div></div>
+              <div class="m-field"><div class="m-label">Hasło</div><div class="m-input">••••••••</div></div>
+              <div class="m-btn">Zarejestruj się</div>
+              <div class="m-footer">Masz już konto? <span>Zaloguj się</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>B — Split Panel</h3>
+      <p>Ciemna lewa strona z marką, jasna prawa z formularzem. Klasyczny SaaS look.</p>
+    </div>
+  </div>
+
+  <!-- Option C: Minimal nav -->
+  <div class="card" data-choice="c" onclick="toggleSelect(this)">
+    <div class="card-image" style="padding: 12px; background: #f0ede8;">
+      <div class="mock-page">
+        <div class="m-nav">
+          <div class="m-nav-logo">cliently</div>
+          <div class="m-nav-link">Masz konto? <span style="color: oklch(0.62 0.07 150); font-weight: 500;">Zaloguj się</span></div>
+        </div>
+        <div class="m-below-nav">
+          <div style="width: 300px;">
+            <div class="m-title" style="font-size: 18px; margin-bottom: 6px;">Utwórz konto</div>
+            <div class="m-sub" style="margin-bottom: 22px;">Zacznij za darmo. Bez karty kredytowej.</div>
+            <div class="m-field"><div class="m-label">Email</div><div class="m-input">jan@firma.pl</div></div>
+            <div class="m-field"><div class="m-label">Hasło</div><div class="m-input">••••••••</div></div>
+            <div class="m-btn">Zarejestruj się</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>C — Minimal z top nav</h3>
+      <p>Nawigacja na górze z linkiem do logowania. Formularz bez karty, lekki i nowoczesny.</p>
+    </div>
+  </div>
+
+</div>
