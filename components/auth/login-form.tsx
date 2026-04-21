@@ -62,18 +62,21 @@ export function LoginForm() {
   }
 
   return (
-    <div className="flex flex-col gap-7">
-      <header className="flex flex-col items-center gap-1.5 text-center">
-        <h1 className="text-foreground text-[24px] leading-[1.15] font-semibold tracking-[-0.02em]">
-          Zaloguj się do Cliently
+    <div className="flex w-full flex-col gap-8">
+      <header className="flex flex-col gap-2">
+        <span className="text-accent text-[10.5px] font-medium tracking-widest uppercase">
+          Logowanie
+        </span>
+        <h1 className="text-foreground text-[22px] leading-[1.15] font-semibold tracking-[-0.02em]">
+          Witaj ponownie.
         </h1>
-        <p className="text-muted-foreground text-[13px] leading-relaxed">
-          Witaj ponownie. Wróć do pracy z klientami.
+        <p className="text-muted-foreground text-[13px] leading-[1.55]">
+          Zaloguj się i wróć do pracy z klientami.
         </p>
       </header>
 
       <form id={formId} onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-        <FieldGroup className="gap-5">
+        <FieldGroup className="gap-4">
           <Field>
             <FieldLabel htmlFor={`${formId}-email`}>E-mail</FieldLabel>
             <FieldContent>
@@ -92,7 +95,12 @@ export function LoginForm() {
           </Field>
 
           <Field>
-            <FieldLabel htmlFor={`${formId}-password`}>Hasło</FieldLabel>
+            <div className="flex items-center justify-between">
+              <FieldLabel htmlFor={`${formId}-password`}>Hasło</FieldLabel>
+              <span className="text-muted-foreground/70 text-[11.5px]">
+                Zapomniane? Napisz do nas.
+              </span>
+            </div>
             <FieldContent>
               <div className="relative">
                 <Input
@@ -126,21 +134,28 @@ export function LoginForm() {
 
         {submitError ? <FieldError>{submitError}</FieldError> : null}
 
-        <Button type="submit" size="lg" disabled={isPending} className="w-full">
+        <Button
+          variant="primary"
+          type="submit"
+          size="lg"
+          disabled={isPending}
+          className="mt-1 w-full"
+        >
           {isPending ? "Logowanie…" : "Zaloguj się"}
           {!isPending ? <ArrowRight weight="bold" /> : null}
         </Button>
       </form>
 
-      <p className="text-muted-foreground text-center text-[12.5px]">
-        Nie masz jeszcze konta?{" "}
+      <div className="border-border flex items-center justify-between border-t pt-5 text-[12.5px]">
+        <span className="text-muted-foreground">Nie masz jeszcze konta?</span>
         <Link
           href="/register"
-          className="text-foreground hover:text-accent font-medium underline-offset-4 hover:underline"
+          className="text-foreground hover:text-accent inline-flex items-center gap-1 font-medium transition-colors"
         >
           Załóż konto
+          <ArrowRight weight="bold" className="size-3" />
         </Link>
-      </p>
+      </div>
     </div>
   );
 }

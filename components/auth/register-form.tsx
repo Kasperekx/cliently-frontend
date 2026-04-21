@@ -3,18 +3,11 @@
 import { type FormEvent, useId, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, Check, Eye, EyeSlash } from "@phosphor-icons/react";
+import { ArrowRight, Eye, EyeSlash } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Field,
-  FieldContent,
-  FieldDescription,
-  FieldError,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field";
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { signUp } from "@/lib/auth-client";
 import { cn } from "@/lib/utils";
@@ -27,36 +20,18 @@ type PasswordCheck = {
 
 function getPasswordChecks(password: string): PasswordCheck[] {
   return [
-    { id: "length", label: "Minimum 8 znaków", passed: password.length >= 8 },
+    { id: "length", label: "8+ znaków", passed: password.length >= 8 },
     {
       id: "case",
-      label: "Małe i wielkie litery",
+      label: "Aa",
       passed: /[a-z]/.test(password) && /[A-Z]/.test(password),
     },
     {
       id: "complexity",
-      label: "Cyfra lub znak specjalny",
+      label: "Cyfra / znak",
       passed: /\d/.test(password) || /[^A-Za-z0-9]/.test(password),
     },
   ];
-}
-
-function RequirementRow({ passed, label }: { passed: boolean; label: string }) {
-  return (
-    <div className="flex items-center gap-1.5 text-[12px]">
-      <span
-        className={cn(
-          "inline-flex size-3.5 items-center justify-center rounded-full transition-colors",
-          passed
-            ? "text-background bg-emerald-500"
-            : "border-border bg-background text-muted-foreground border"
-        )}
-      >
-        {passed ? <Check weight="bold" className="size-2.5" /> : null}
-      </span>
-      <span className={passed ? "text-foreground" : "text-muted-foreground"}>{label}</span>
-    </div>
-  );
 }
 
 function mapSignUpError(code: string | undefined, fallback: string): string {
@@ -87,6 +62,8 @@ export function RegisterForm() {
 
   const passwordChecks = useMemo(() => getPasswordChecks(password), [password]);
   const allPasswordChecksPassed = passwordChecks.every((check) => check.passed);
+  const passedCount = passwordChecks.filter((c) => c.passed).length;
+  const showChecks = password.length > 0;
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -124,18 +101,21 @@ export function RegisterForm() {
   }
 
   return (
-    <div className="flex flex-col gap-7">
-      <header className="flex flex-col items-center gap-1.5 text-center">
-        <h1 className="text-foreground text-[24px] leading-[1.15] font-semibold tracking-[-0.02em]">
-          Załóż konto w Cliently
+    <div className="flex w-full flex-col gap-8">
+      <header className="flex flex-col gap-2">
+        <span className="text-accent text-[10.5px] font-medium tracking-widest uppercase">
+          Nowe konto
+        </span>
+        <h1 className="text-foreground text-[22px] leading-[1.15] font-semibold tracking-[-0.02em]">
+          Zacznij od pierwszego klienta.
         </h1>
-        <p className="text-muted-foreground text-[13px] leading-relaxed">
-          Potem krótki onboarding w trzech krokach.
+        <p className="text-muted-foreground text-[13px] leading-[1.55]">
+          Dwie minuty setup. Potem krótki onboarding w trzech krokach.
         </p>
       </header>
 
       <form id={formId} onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
-        <FieldGroup className="gap-5">
+        <FieldGroup className="gap-4">
           <Field>
             <FieldLabel htmlFor={`${formId}-name`}>Imię i nazwisko</FieldLabel>
             <FieldContent>
@@ -167,13 +147,17 @@ export function RegisterForm() {
                 onChange={(event) => setEmail(event.target.value)}
               />
             </FieldContent>
-            <FieldDescription>
-              Najlepiej użyj adresu, którego używasz do pracy z klientami.
-            </FieldDescription>
           </Field>
 
           <Field>
-            <FieldLabel htmlFor={`${formId}-password`}>Hasło</FieldLabel>
+            <div className="flex items-center justify-between">
+              <FieldLabel htmlFor={`${formId}-password`}>Hasło</FieldLabel>
+              {showChecks ? (
+                <span className="text-muted-foreground text-[11px] tabular-nums">
+                  {passedCount}/3
+                </span>
+              ) : null}
+            </div>
             <FieldContent>
               <div className="relative">
                 <Input
@@ -181,7 +165,7 @@ export function RegisterForm() {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   autoComplete="new-password"
-                  placeholder="Wpisz hasło"
+                  placeholder="Min. 8 znaków"
                   minLength={8}
                   required
                   value={password}
@@ -203,14 +187,37 @@ export function RegisterForm() {
                 </button>
               </div>
             </FieldContent>
-            <div className="mt-2 grid gap-1.5 sm:grid-cols-3">
+            <div
+              className={cn(
+                "flex items-center gap-3 overflow-hidden transition-all duration-200",
+                showChecks ? "mt-2 max-h-8 opacity-100" : "max-h-0 opacity-0"
+              )}
+            >
               {passwordChecks.map((check) => (
-                <RequirementRow key={check.id} passed={check.passed} label={check.label} />
+                <div key={check.id} className="flex items-center gap-1.5 text-[11.5px]">
+                  <span
+                    className={cn(
+                      "size-1.5 rounded-full transition-colors",
+                      check.passed ? "bg-accent" : "bg-border"
+                    )}
+                  />
+                  <span
+                    className={cn(
+                      "transition-colors",
+                      check.passed ? "text-foreground" : "text-muted-foreground"
+                    )}
+                  >
+                    {check.label}
+                  </span>
+                </div>
               ))}
             </div>
           </Field>
 
-          <Field orientation="horizontal" className="items-start gap-2 text-left">
+          <Field
+            orientation="horizontal"
+            className="border-border items-start gap-2.5 border-t pt-4 text-left"
+          >
             <Checkbox
               id={`${formId}-terms`}
               checked={termsAccepted}
@@ -219,19 +226,19 @@ export function RegisterForm() {
             />
             <label
               htmlFor={`${formId}-terms`}
-              className="text-muted-foreground cursor-pointer text-[13px] leading-relaxed"
+              className="text-muted-foreground cursor-pointer text-[12.5px] leading-normal"
             >
               Akceptuję{" "}
               <Link
                 href="/terms"
-                className="text-foreground hover:text-accent font-medium underline underline-offset-2"
+                className="text-foreground hover:text-accent underline-offset-2 hover:underline"
               >
                 regulamin
               </Link>{" "}
               i{" "}
               <Link
                 href="/privacy"
-                className="text-foreground hover:text-accent font-medium underline underline-offset-2"
+                className="text-foreground hover:text-accent underline-offset-2 hover:underline"
               >
                 politykę prywatności
               </Link>
@@ -242,21 +249,28 @@ export function RegisterForm() {
 
         {submitError ? <FieldError>{submitError}</FieldError> : null}
 
-        <Button type="submit" size="lg" disabled={isPending} className="w-full">
+        <Button
+          variant="primary"
+          type="submit"
+          size="lg"
+          disabled={isPending}
+          className="mt-1 w-full"
+        >
           {isPending ? "Tworzymy konto…" : "Załóż konto"}
           {!isPending ? <ArrowRight weight="bold" /> : null}
         </Button>
       </form>
 
-      <p className="text-muted-foreground text-center text-[12.5px]">
-        Masz już konto?{" "}
+      <div className="border-border flex items-center justify-between border-t pt-5 text-[12.5px]">
+        <span className="text-muted-foreground">Masz już konto?</span>
         <Link
           href="/login"
-          className="text-foreground hover:text-accent font-medium underline-offset-4 hover:underline"
+          className="text-foreground hover:text-accent inline-flex items-center gap-1 font-medium transition-colors"
         >
           Zaloguj się
+          <ArrowRight weight="bold" className="size-3" />
         </Link>
-      </p>
+      </div>
     </div>
   );
 }
