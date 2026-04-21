@@ -10,6 +10,13 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { cn } from "@/lib/utils";
 
 import {
@@ -40,9 +47,11 @@ function ChipOption<T extends string>({
       onClick={onSelect}
       aria-pressed={isActive}
       className={cn(
-        "border-border/70 bg-background/70 hover:border-accent/40 hover:text-foreground inline-flex items-center justify-center rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all",
-        "focus-visible:ring-accent/40 focus-visible:ring-2 focus-visible:outline-none",
-        isActive ? "border-accent bg-accent/10 text-foreground shadow-sm" : "text-muted-foreground"
+        "inline-flex items-center justify-center rounded-md border px-2.5 py-1.5 text-[12.5px] font-medium transition-colors duration-150",
+        "focus-visible:ring-ring/40 focus-visible:ring-2 focus-visible:outline-none",
+        isActive
+          ? "border-foreground bg-foreground text-background"
+          : "border-border bg-background text-muted-foreground hover:border-foreground/20 hover:text-foreground"
       )}
     >
       {label}
@@ -54,7 +63,7 @@ export function StepOrganization({ data, onChange }: StepOrganizationProps) {
   const formId = useId();
 
   return (
-    <FieldGroup className="gap-7">
+    <FieldGroup className="gap-6">
       <Field>
         <FieldLabel htmlFor={`${formId}-name`}>Nazwa firmy</FieldLabel>
         <FieldContent>
@@ -67,7 +76,6 @@ export function StepOrganization({ data, onChange }: StepOrganizationProps) {
             required
             value={data.name}
             onChange={(event) => onChange({ ...data, name: event.target.value })}
-            className="border-border/70 bg-background/80 h-11 rounded-md px-4 text-sm"
           />
         </FieldContent>
         <FieldDescription>
@@ -76,8 +84,8 @@ export function StepOrganization({ data, onChange }: StepOrganizationProps) {
       </Field>
 
       <Field>
-        <FieldLabel className="text-foreground text-sm font-medium">Branża</FieldLabel>
-        <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Branża">
+        <FieldLabel>Branża</FieldLabel>
+        <div className="mt-1 flex flex-wrap gap-1.5" role="radiogroup" aria-label="Branża">
           {INDUSTRY_OPTIONS.map((option) => (
             <ChipOption<IndustryValue>
               key={option.value}
@@ -88,24 +96,28 @@ export function StepOrganization({ data, onChange }: StepOrganizationProps) {
             />
           ))}
         </div>
-        <FieldDescription>
-          Pomoże nam dopasować szablony i sugestie pól w klientach.
-        </FieldDescription>
+        <FieldDescription>Pomoże dopasować szablony i sugestie pól w klientach.</FieldDescription>
       </Field>
 
       <Field>
-        <FieldLabel className="text-foreground text-sm font-medium">Wielkość zespołu</FieldLabel>
-        <div className="mt-2 flex flex-wrap gap-2" role="radiogroup" aria-label="Wielkość zespołu">
-          {TEAM_SIZE_OPTIONS.map((option) => (
-            <ChipOption<TeamSizeValue>
-              key={option.value}
-              value={option.value}
-              label={option.label}
-              isActive={data.teamSize === option.value}
-              onSelect={() => onChange({ ...data, teamSize: option.value })}
-            />
-          ))}
-        </div>
+        <FieldLabel htmlFor={`${formId}-team-size`}>Wielkość zespołu</FieldLabel>
+        <FieldContent>
+          <Select
+            value={data.teamSize ?? undefined}
+            onValueChange={(next) => onChange({ ...data, teamSize: next as TeamSizeValue })}
+          >
+            <SelectTrigger id={`${formId}-team-size`} aria-label="Wielkość zespołu">
+              <SelectValue placeholder="Wybierz rozmiar" />
+            </SelectTrigger>
+            <SelectContent>
+              {TEAM_SIZE_OPTIONS.map((option) => (
+                <SelectItem key={option.value} value={option.value}>
+                  {option.label}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </FieldContent>
       </Field>
     </FieldGroup>
   );

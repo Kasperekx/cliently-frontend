@@ -7,7 +7,8 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  /* Jedna rodzina sans (Plus Jakarta) — nagłówki przez wagę + tracking, bez osobnego serifu */
+
+  /* One sans (Plus Jakarta). Hierarchy by weight + size, never by family. */
   --font-sans:
     var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji",
     "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
@@ -15,7 +16,13 @@
     var(--font-jetbrains-mono), ui-monospace, "Cascadia Code", "Source Code Pro", Menlo, Consolas,
     monospace;
   --font-heading: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
-  --shadow-card: var(--shadow-elevated);
+
+  /* Minimalist shadow scale — hairline first, soft lift second. */
+  --shadow-xs: var(--shadow-hairline);
+  --shadow-sm: var(--shadow-soft);
+  --shadow-pop: var(--shadow-popover);
+  --shadow-card: var(--shadow-hairline);
+
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -45,141 +52,125 @@
   --color-popover: var(--popover);
   --color-card-foreground: var(--card-foreground);
   --color-card: var(--card);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
+
+  --radius-sm: calc(var(--radius) * 0.5);
+  --radius-md: calc(var(--radius) * 0.75);
   --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
+  --radius-xl: calc(var(--radius) * 1.5);
+  --radius-2xl: calc(var(--radius) * 2);
+
+  --ease-out-quick: cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 :root {
-  --shadow-elevated:
-    0 1px 0 rgba(26, 23, 19, 0.04), 0 20px 44px -28px rgba(26, 23, 19, 0.18),
-    0 2px 6px -2px rgba(26, 23, 19, 0.05);
-  /* LIGHT MODE — warm off-white + sage accent */
-  --background: #faf9f5;
-  /* ciepłe off-white, lekki żółtawy undertone */
-  --foreground: oklch(0.18 0.01 85);
-  /* warm near-black */
+  /* LIGHT — cool premium neutrals. */
+  --background: #ffffff;
+  --foreground: oklch(0.2 0.01 265);
 
-  --card: oklch(0.995 0.003 85);
-  /* lekko ocieplona powierzchnia dla premium auth surfaces */
-  --card-foreground: oklch(0.18 0.01 85);
+  --card: oklch(0.995 0.003 265);
+  --card-foreground: oklch(0.2 0.01 265);
 
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.18 0.01 85);
+  --popover-foreground: oklch(0.2 0.01 265);
 
-  --primary: oklch(0.18 0.01 85);
-  /* warm near-black jako primary (buttony CTA) */
-  --primary-foreground: oklch(0.985 0.005 85);
+  /* Primary = near-black (Linear-style CTA). */
+  --primary: oklch(0.2 0.01 265);
+  --primary-foreground: oklch(0.99 0.002 265);
 
-  --secondary: oklch(0.96 0.008 85);
-  /* subtle warm gray */
-  --secondary-foreground: oklch(0.18 0.01 85);
+  --secondary: oklch(0.97 0.005 265);
+  --secondary-foreground: oklch(0.2 0.01 265);
 
-  --muted: oklch(0.96 0.008 85);
-  /* Ciemniejszy niż 0.5 L — lepsza czytelność pomocniczego tekstu (WCAG) */
-  --muted-foreground: oklch(0.42 0.012 85);
+  --muted: oklch(0.97 0.005 265);
+  --muted-foreground: oklch(0.48 0.012 265);
 
-  --accent: oklch(0.62 0.07 150);
-  /* SAGE GREEN — spokojny, dojrzały */
-  --accent-foreground: oklch(0.985 0.005 85);
+  /* Accent — restrained indigo. Used for focus, nav-active, links, status dots. */
+  --accent: oklch(0.55 0.15 265);
+  --accent-foreground: oklch(0.99 0.002 265);
 
   --destructive: oklch(0.55 0.2 25);
-  /* warm red, nie krzykliwy */
 
-  --border: oklch(0.9 0.006 85);
-  /* subtle warm border */
-  --input: oklch(0.94 0.005 85);
-  --ring: oklch(0.62 0.07 150);
-  /* sage jako focus ring */
+  --border: oklch(0.92 0.006 265);
+  --input: oklch(0.94 0.005 265);
+  --ring: var(--accent);
 
-  /* Chart colors — sage green scale + neutrale */
-  --chart-1: oklch(0.62 0.07 150);
-  /* sage primary */
-  --chart-2: oklch(0.72 0.05 150);
-  /* sage light */
-  --chart-3: oklch(0.5 0.08 150);
-  /* sage deep */
-  --chart-4: oklch(0.6 0.03 85);
-  /* warm gray */
-  --chart-5: oklch(0.4 0.05 150);
-  /* sage darkest */
+  /* Charts — cool indigo scale + neutral. */
+  --chart-1: oklch(0.55 0.15 265);
+  --chart-2: oklch(0.68 0.12 265);
+  --chart-3: oklch(0.42 0.14 265);
+  --chart-4: oklch(0.62 0.02 265);
+  --chart-5: oklch(0.78 0.08 265);
 
-  --radius: 0.625rem;
+  --radius: 0.5rem;
 
-  /* Sidebar — lekko ciemniejszy niż background dla subtelnej hierarchii */
-  --sidebar: oklch(0.97 0.006 85);
-  --sidebar-foreground: oklch(0.18 0.01 85);
-  --sidebar-primary: oklch(0.62 0.07 150);
-  /* sage jako aktywny item */
-  --sidebar-primary-foreground: oklch(0.985 0.005 85);
-  --sidebar-accent: oklch(0.94 0.008 85);
-  /* hover state */
-  --sidebar-accent-foreground: oklch(0.18 0.01 85);
-  --sidebar-border: oklch(0.92 0.005 85);
-  --sidebar-ring: oklch(0.62 0.07 150);
+  --sidebar: oklch(0.985 0.004 265);
+  --sidebar-foreground: oklch(0.2 0.01 265);
+  --sidebar-primary: var(--accent);
+  --sidebar-primary-foreground: oklch(0.99 0.002 265);
+  --sidebar-accent: oklch(0.95 0.006 265);
+  --sidebar-accent-foreground: oklch(0.2 0.01 265);
+  --sidebar-border: oklch(0.92 0.006 265);
+  --sidebar-ring: var(--accent);
+
+  /* Shadow primitives. */
+  --shadow-hairline: 0 1px 0 oklch(0 0 0 / 0.04);
+  --shadow-soft:
+    0 1px 0 oklch(0 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.04), 0 8px 24px -16px oklch(0 0 0 / 0.08);
+  --shadow-popover:
+    0 1px 0 oklch(0 0 0 / 0.04), 0 12px 32px -12px oklch(0 0 0 / 0.18),
+    0 4px 12px -6px oklch(0 0 0 / 0.1);
 }
 
 .dark {
-  --shadow-elevated: 0 4px 18px oklch(0 0 0 / 0.24), 0 28px 70px oklch(0 0 0 / 0.38);
+  /* DARK — deep cool charcoal, layers via transparency. */
+  --background: oklch(0.16 0.008 265);
+  --foreground: oklch(0.97 0.004 265);
 
-  /* DARK MODE — warm charcoal + brighter sage */
-  --background: oklch(0.14 0.008 85);
-  /* warm charcoal, NIE pure black */
-  --foreground: oklch(0.96 0.005 85);
-  /* warm off-white */
+  --card: oklch(0.2 0.008 265);
+  --card-foreground: oklch(0.97 0.004 265);
 
-  --card: oklch(0.18 0.008 85);
-  /* lekko jaśniejsze niż bg */
-  --card-foreground: oklch(0.96 0.005 85);
+  --popover: oklch(0.2 0.008 265);
+  --popover-foreground: oklch(0.97 0.004 265);
 
-  --popover: oklch(0.18 0.008 85);
-  --popover-foreground: oklch(0.96 0.005 85);
+  /* In dark, primary flips to bright near-white for contrast. */
+  --primary: oklch(0.97 0.004 265);
+  --primary-foreground: oklch(0.16 0.008 265);
 
-  --primary: oklch(0.96 0.005 85);
-  /* off-white jako primary w dark */
-  --primary-foreground: oklch(0.18 0.008 85);
+  --secondary: oklch(0.24 0.01 265);
+  --secondary-foreground: oklch(0.97 0.004 265);
 
-  --secondary: oklch(0.24 0.008 85);
-  /* muted warm gray */
-  --secondary-foreground: oklch(0.96 0.005 85);
+  --muted: oklch(0.24 0.01 265);
+  --muted-foreground: oklch(0.66 0.015 265);
 
-  --muted: oklch(0.24 0.008 85);
-  --muted-foreground: oklch(0.62 0.012 85);
-
-  --accent: oklch(0.7 0.08 150);
-  /* SAGE, jaśniejsza na dark — lepiej widoczna */
-  --accent-foreground: oklch(0.14 0.008 85);
+  --accent: oklch(0.7 0.14 265);
+  --accent-foreground: oklch(0.16 0.008 265);
 
   --destructive: oklch(0.65 0.2 25);
 
-  --border: oklch(1 0 0 / 8%);
-  /* subtelniejsze niż Twoje 10% — premium feel */
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.7 0.08 150);
+  --border: oklch(1 0 0 / 0.08);
+  --input: oklch(1 0 0 / 0.1);
+  --ring: var(--accent);
 
-  /* Chart colors dla dark mode */
-  --chart-1: oklch(0.7 0.08 150);
-  --chart-2: oklch(0.8 0.06 150);
-  --chart-3: oklch(0.58 0.09 150);
-  --chart-4: oklch(0.7 0.03 85);
-  --chart-5: oklch(0.48 0.07 150);
+  --chart-1: oklch(0.7 0.14 265);
+  --chart-2: oklch(0.82 0.1 265);
+  --chart-3: oklch(0.56 0.15 265);
+  --chart-4: oklch(0.72 0.02 265);
+  --chart-5: oklch(0.88 0.07 265);
 
-  /* Sidebar */
-  --sidebar: oklch(0.12 0.008 85);
-  /* ciemniejszy niż background */
-  --sidebar-foreground: oklch(0.96 0.005 85);
-  --sidebar-primary: oklch(0.7 0.08 150);
-  /* sage jako aktywny */
-  --sidebar-primary-foreground: oklch(0.14 0.008 85);
-  --sidebar-accent: oklch(0.2 0.008 85);
-  /* hover */
-  --sidebar-accent-foreground: oklch(0.96 0.005 85);
-  --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.7 0.08 150);
+  --sidebar: oklch(0.14 0.008 265);
+  --sidebar-foreground: oklch(0.97 0.004 265);
+  --sidebar-primary: var(--accent);
+  --sidebar-primary-foreground: oklch(0.16 0.008 265);
+  --sidebar-accent: oklch(1 0 0 / 0.04);
+  --sidebar-accent-foreground: oklch(0.97 0.004 265);
+  --sidebar-border: oklch(1 0 0 / 0.08);
+  --sidebar-ring: var(--accent);
+
+  --shadow-hairline: 0 1px 0 oklch(1 0 0 / 0.04);
+  --shadow-soft:
+    0 1px 0 oklch(1 0 0 / 0.04), 0 1px 2px oklch(0 0 0 / 0.3), 0 12px 32px -16px oklch(0 0 0 / 0.5);
+  --shadow-popover:
+    0 1px 0 oklch(1 0 0 / 0.06), 0 16px 36px -12px oklch(0 0 0 / 0.6),
+    0 6px 14px -6px oklch(0 0 0 / 0.4);
 }
 
 @layer base {
@@ -187,11 +178,36 @@
     @apply border-border outline-ring/50;
   }
 
+  html {
+    font-family: var(--font-sans);
+    font-feature-settings: "cv11", "ss01", "ss03";
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
 
-  html {
-    font-family: var(--font-sans);
+  /* Tabular numerics for tables and counters. */
+  table,
+  [data-slot="numeric"] {
+    font-variant-numeric: tabular-nums;
+    font-feature-settings: "tnum", "cv11", "ss01";
+  }
+
+  :focus-visible {
+    outline: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

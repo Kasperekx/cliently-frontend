@@ -29,11 +29,15 @@ type SessionGateProps = {
 function Loader() {
   return (
     <div
-      className="text-muted-foreground flex min-h-dvh items-center justify-center text-sm"
+      className="bg-background flex min-h-dvh flex-col items-center justify-center gap-3"
       role="status"
       aria-live="polite"
     >
-      Ładowanie…
+      <span
+        aria-hidden
+        className="border-border border-t-foreground inline-block size-4 animate-spin rounded-full border-2"
+      />
+      <span className="text-muted-foreground text-[12.5px]">Ładowanie…</span>
     </div>
   );
 }

@@ -3,17 +3,9 @@
 import { type FormEvent, useId, useMemo, useState, useTransition } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ArrowRight, CheckCircle, Eye, EyeSlash } from "@phosphor-icons/react";
+import { ArrowRight, Check, Eye, EyeSlash } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Field,
@@ -35,11 +27,7 @@ type PasswordCheck = {
 
 function getPasswordChecks(password: string): PasswordCheck[] {
   return [
-    {
-      id: "length",
-      label: "Minimum 8 znaków",
-      passed: password.length >= 8,
-    },
+    { id: "length", label: "Minimum 8 znaków", passed: password.length >= 8 },
     {
       id: "case",
       label: "Małe i wielkie litery",
@@ -55,16 +43,16 @@ function getPasswordChecks(password: string): PasswordCheck[] {
 
 function RequirementRow({ passed, label }: { passed: boolean; label: string }) {
   return (
-    <div className="flex items-center gap-2 text-xs">
+    <div className="flex items-center gap-1.5 text-[12px]">
       <span
         className={cn(
-          "flex size-5 items-center justify-center rounded-full border transition-colors",
+          "inline-flex size-3.5 items-center justify-center rounded-full transition-colors",
           passed
-            ? "border-accent/40 bg-accent/10 text-accent"
-            : "border-border/70 bg-background text-muted-foreground"
+            ? "text-background bg-emerald-500"
+            : "border-border bg-background text-muted-foreground border"
         )}
       >
-        <CheckCircle className="size-3.5" weight="fill" />
+        {passed ? <Check weight="bold" className="size-2.5" /> : null}
       </span>
       <span className={passed ? "text-foreground" : "text-muted-foreground"}>{label}</span>
     </div>
@@ -125,187 +113,150 @@ export function RegisterForm() {
     }
 
     startTransition(async () => {
-      const { error } = await signUp.email({
-        name: trimmedName,
-        email: trimmedEmail,
-        password,
-      });
-
+      const { error } = await signUp.email({ name: trimmedName, email: trimmedEmail, password });
       if (error) {
         setSubmitError(mapSignUpError(error.code, error.message ?? ""));
         return;
       }
-
       router.push("/onboarding");
       router.refresh();
     });
   }
 
   return (
-    <Card className="shadow-card border-border/70 bg-card/95 w-full overflow-hidden rounded-xl border backdrop-blur-sm">
-      <div className="from-accent/8 via-background to-background bg-linear-to-b">
-        <CardHeader className="px-6 pt-6 pb-5 sm:px-8">
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-muted-foreground bg-background/80 border-border/60 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-medium tracking-[0.22em] uppercase">
-              <span className="bg-accent size-1.5 rounded-full" />
-              Rejestracja
-            </span>
-          </div>
-          <CardTitle className="mt-5 text-[1.75rem] font-semibold tracking-tight sm:text-[2rem]">
-            Utwórz konto
-          </CardTitle>
-          <CardDescription className="mt-2 max-w-md text-sm leading-relaxed">
-            Zacznij od danych logowania. Po założeniu konta przeprowadzimy Cię przez krótki
-            onboarding w trzech krokach: organizacja, branding i zespół.
-          </CardDescription>
-        </CardHeader>
+    <div className="flex flex-col gap-7">
+      <header className="flex flex-col items-center gap-1.5 text-center">
+        <h1 className="text-foreground text-[24px] leading-[1.15] font-semibold tracking-[-0.02em]">
+          Załóż konto w Cliently
+        </h1>
+        <p className="text-muted-foreground text-[13px] leading-relaxed">
+          Potem krótki onboarding w trzech krokach.
+        </p>
+      </header>
 
-        <form id={formId} onSubmit={handleSubmit} noValidate>
-          <CardContent className="px-6 pb-6 sm:px-8">
-            <FieldGroup className="gap-6">
-              <Field>
-                <FieldLabel htmlFor={`${formId}-name`}>Imię i nazwisko</FieldLabel>
-                <FieldContent>
-                  <Input
-                    id={`${formId}-name`}
-                    name="name"
-                    type="text"
-                    autoComplete="name"
-                    placeholder="Jan Kowalski"
-                    required
-                    value={name}
-                    onChange={(event) => setName(event.target.value)}
-                    className="border-border/70 bg-background/80 h-11 rounded-md px-4 text-sm"
-                  />
-                </FieldContent>
-                <FieldDescription>
-                  Tak będziesz widoczny dla zespołu i klientów w Cliently.
-                </FieldDescription>
-              </Field>
+      <form id={formId} onSubmit={handleSubmit} noValidate className="flex flex-col gap-5">
+        <FieldGroup className="gap-5">
+          <Field>
+            <FieldLabel htmlFor={`${formId}-name`}>Imię i nazwisko</FieldLabel>
+            <FieldContent>
+              <Input
+                id={`${formId}-name`}
+                name="name"
+                type="text"
+                autoComplete="name"
+                placeholder="Jan Kowalski"
+                required
+                value={name}
+                onChange={(event) => setName(event.target.value)}
+              />
+            </FieldContent>
+          </Field>
 
-              <Field>
-                <FieldLabel htmlFor={`${formId}-email`}>E-mail</FieldLabel>
-                <FieldContent>
-                  <Input
-                    id={`${formId}-email`}
-                    name="email"
-                    type="email"
-                    autoComplete="email"
-                    inputMode="email"
-                    placeholder="jan@firma.pl"
-                    required
-                    value={email}
-                    onChange={(event) => setEmail(event.target.value)}
-                    className="border-border/70 bg-background/80 h-11 rounded-md px-4 text-sm"
-                  />
-                </FieldContent>
-                <FieldDescription>
-                  Najlepiej użyj adresu, którego będziesz używać do pracy z klientami.
-                </FieldDescription>
-              </Field>
+          <Field>
+            <FieldLabel htmlFor={`${formId}-email`}>E-mail</FieldLabel>
+            <FieldContent>
+              <Input
+                id={`${formId}-email`}
+                name="email"
+                type="email"
+                autoComplete="email"
+                inputMode="email"
+                placeholder="jan@firma.pl"
+                required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
+              />
+            </FieldContent>
+            <FieldDescription>
+              Najlepiej użyj adresu, którego używasz do pracy z klientami.
+            </FieldDescription>
+          </Field>
 
-              <div className="grid gap-5">
-                <Field>
-                  <FieldLabel htmlFor={`${formId}-password`}>Hasło</FieldLabel>
-                  <FieldContent>
-                    <div className="relative">
-                      <Input
-                        id={`${formId}-password`}
-                        name="password"
-                        type={showPassword ? "text" : "password"}
-                        autoComplete="new-password"
-                        placeholder="Wpisz hasło"
-                        minLength={8}
-                        required
-                        value={password}
-                        onChange={(event) => setPassword(event.target.value)}
-                        className="border-border/70 bg-background/80 h-11 rounded-md px-4 pr-12 text-sm"
-                      />
-                      <Button
-                        type="button"
-                        variant="ghost"
-                        size="icon"
-                        className="text-muted-foreground hover:text-foreground absolute top-1 right-1 size-9 rounded-md active:translate-y-0"
-                        onClick={() => setShowPassword((value) => !value)}
-                        aria-label={showPassword ? "Ukryj hasło" : "Pokaż hasło"}
-                        aria-pressed={showPassword}
-                      >
-                        {showPassword ? (
-                          <EyeSlash className="size-4" weight="duotone" />
-                        ) : (
-                          <Eye className="size-4" weight="duotone" />
-                        )}
-                      </Button>
-                    </div>
-                  </FieldContent>
-                  <div className="mt-3 grid gap-2 sm:grid-cols-3">
-                    {passwordChecks.map((check) => (
-                      <RequirementRow key={check.id} passed={check.passed} label={check.label} />
-                    ))}
-                  </div>
-                </Field>
+          <Field>
+            <FieldLabel htmlFor={`${formId}-password`}>Hasło</FieldLabel>
+            <FieldContent>
+              <div className="relative">
+                <Input
+                  id={`${formId}-password`}
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  autoComplete="new-password"
+                  placeholder="Wpisz hasło"
+                  minLength={8}
+                  required
+                  value={password}
+                  onChange={(event) => setPassword(event.target.value)}
+                  className="pr-10"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((v) => !v)}
+                  aria-label={showPassword ? "Ukryj hasło" : "Pokaż hasło"}
+                  aria-pressed={showPassword}
+                  className="text-muted-foreground hover:bg-muted hover:text-foreground focus-visible:ring-ring/40 absolute top-1/2 right-1 inline-flex size-7 -translate-y-1/2 items-center justify-center rounded-md transition-colors focus-visible:ring-2 focus-visible:outline-none"
+                >
+                  {showPassword ? (
+                    <EyeSlash weight="regular" className="size-4" />
+                  ) : (
+                    <Eye weight="regular" className="size-4" />
+                  )}
+                </button>
               </div>
+            </FieldContent>
+            <div className="mt-2 grid gap-1.5 sm:grid-cols-3">
+              {passwordChecks.map((check) => (
+                <RequirementRow key={check.id} passed={check.passed} label={check.label} />
+              ))}
+            </div>
+          </Field>
 
-              <div className="bg-muted/35 border-border/60 rounded-md border p-4">
-                <Field orientation="horizontal" className="items-start gap-3 text-left">
-                  <Checkbox
-                    id={`${formId}-terms`}
-                    checked={termsAccepted}
-                    onCheckedChange={(value) => setTermsAccepted(value === true)}
-                    className="mt-0.5 rounded-md"
-                  />
-                  <div className="space-y-2">
-                    <label
-                      htmlFor={`${formId}-terms`}
-                      className="text-foreground block cursor-pointer text-sm leading-relaxed"
-                    >
-                      Akceptuję{" "}
-                      <Link
-                        href="/terms"
-                        className="text-accent font-medium underline underline-offset-2 hover:opacity-90"
-                      >
-                        regulamin
-                      </Link>{" "}
-                      i{" "}
-                      <Link
-                        href="/privacy"
-                        className="text-accent font-medium underline underline-offset-2 hover:opacity-90"
-                      >
-                        politykę prywatności
-                      </Link>
-                      .
-                    </label>
-                  </div>
-                </Field>
-              </div>
-            </FieldGroup>
-
-            {submitError ? <FieldError className="mt-4">{submitError}</FieldError> : null}
-          </CardContent>
-
-          <CardFooter className="border-border/60 bg-background/80 flex flex-col gap-4 border-t px-6 py-5 sm:px-8">
-            <Button
-              type="submit"
-              size="lg"
-              disabled={isPending}
-              className="h-11 w-full rounded-md text-sm font-semibold"
+          <Field orientation="horizontal" className="items-start gap-2 text-left">
+            <Checkbox
+              id={`${formId}-terms`}
+              checked={termsAccepted}
+              onCheckedChange={(value) => setTermsAccepted(value === true)}
+              className="mt-0.5"
+            />
+            <label
+              htmlFor={`${formId}-terms`}
+              className="text-muted-foreground cursor-pointer text-[13px] leading-relaxed"
             >
-              {isPending ? "Tworzymy konto..." : "Załóż konto"}
-              {!isPending ? <ArrowRight className="size-4" weight="bold" /> : null}
-            </Button>
-
-            <p className="text-muted-foreground text-center text-xs">
-              Masz już konto?{" "}
+              Akceptuję{" "}
               <Link
-                href="/login"
-                className="text-accent font-medium underline underline-offset-4 hover:opacity-90"
+                href="/terms"
+                className="text-foreground hover:text-accent font-medium underline underline-offset-2"
               >
-                Zaloguj się
+                regulamin
+              </Link>{" "}
+              i{" "}
+              <Link
+                href="/privacy"
+                className="text-foreground hover:text-accent font-medium underline underline-offset-2"
+              >
+                politykę prywatności
               </Link>
-            </p>
-          </CardFooter>
-        </form>
-      </div>
-    </Card>
+              .
+            </label>
+          </Field>
+        </FieldGroup>
+
+        {submitError ? <FieldError>{submitError}</FieldError> : null}
+
+        <Button type="submit" size="lg" disabled={isPending} className="w-full">
+          {isPending ? "Tworzymy konto…" : "Załóż konto"}
+          {!isPending ? <ArrowRight weight="bold" /> : null}
+        </Button>
+      </form>
+
+      <p className="text-muted-foreground text-center text-[12.5px]">
+        Masz już konto?{" "}
+        <Link
+          href="/login"
+          className="text-foreground hover:text-accent font-medium underline-offset-4 hover:underline"
+        >
+          Zaloguj się
+        </Link>
+      </p>
+    </div>
   );
 }

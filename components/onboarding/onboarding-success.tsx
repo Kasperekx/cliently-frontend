@@ -1,15 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Buildings, Palette, Users } from "@phosphor-icons/react";
+import { ArrowRight, Buildings, Check, Palette, Users } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
 
 import { INDUSTRY_OPTIONS, type OnboardingData, ROLE_LABEL, TEAM_SIZE_OPTIONS } from "./types";
 
-type OnboardingSuccessProps = {
-  data: OnboardingData;
-};
+type OnboardingSuccessProps = { data: OnboardingData };
 
 function findLabel<T extends string>(
   options: { value: T; label: string }[],
@@ -21,100 +19,110 @@ function findLabel<T extends string>(
 
 export function OnboardingSuccess({ data }: OnboardingSuccessProps) {
   const { organization, branding, team } = data;
-  const accent = branding.accentColor;
 
   return (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col items-center gap-4 text-center">
+    <div className="flex flex-col items-center gap-8 text-center">
+      <div className="flex flex-col items-center gap-4">
         <span
-          className="inline-flex size-14 items-center justify-center rounded-full"
-          style={{ backgroundColor: `${accent}1f`, color: accent }}
+          className="inline-flex size-10 items-center justify-center rounded-full border border-emerald-500/30 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400"
           aria-hidden
         >
-          <span className="size-3.5 rounded-full" style={{ backgroundColor: accent }} />
+          <Check weight="bold" className="size-5" />
         </span>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-foreground text-2xl font-semibold tracking-tight sm:text-3xl">
-            Wszystko gotowe, {organization.name.trim() || "do dzieła"}.
+        <div className="flex flex-col gap-1.5">
+          <h2 className="text-foreground text-[24px] leading-tight font-semibold tracking-tight">
+            Wszystko gotowe{organization.name.trim() ? `, ${organization.name.trim()}` : ""}.
           </h2>
-          <p className="text-muted-foreground mx-auto max-w-md text-sm leading-relaxed">
-            Twoja przestrzeń jest skonfigurowana. Możesz wejść do Cliently i zacząć pracę z
-            klientami w swoim brandingu.
+          <p className="text-muted-foreground mx-auto max-w-md text-[13px] leading-relaxed">
+            Twoja przestrzeń jest skonfigurowana. Wejdź do Cliently i zacznij pracę z klientami.
           </p>
         </div>
       </div>
 
-      <div className="grid gap-3 sm:grid-cols-3">
-        <div className="border-border/60 bg-background/70 flex flex-col gap-2 rounded-md border p-4">
-          <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-semibold tracking-[0.22em] uppercase">
-            <Buildings className="size-3.5" weight="duotone" />
-            Organizacja
-          </div>
-          <p className="text-foreground text-sm font-semibold">{organization.name.trim() || "—"}</p>
-          <p className="text-muted-foreground text-xs">
-            {findLabel(INDUSTRY_OPTIONS, organization.industry)} ·{" "}
-            {findLabel(TEAM_SIZE_OPTIONS, organization.teamSize)}
-          </p>
-        </div>
-
-        <div className="border-border/60 bg-background/70 flex flex-col gap-2 rounded-md border p-4">
-          <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-semibold tracking-[0.22em] uppercase">
-            <Palette className="size-3.5" weight="duotone" />
-            Branding
-          </div>
-          <div className="flex items-center gap-2">
-            <span
-              className="border-border/70 relative inline-flex size-7 overflow-hidden rounded-md border"
-              style={{ backgroundColor: accent }}
-              aria-hidden
-            >
-              {branding.logoDataUrl ? (
-                <Image
-                  src={branding.logoDataUrl}
-                  alt=""
-                  fill
-                  sizes="28px"
-                  className="object-contain p-0.5"
-                  unoptimized
-                />
-              ) : null}
-            </span>
-            <p className="text-foreground text-sm font-semibold">{accent.toUpperCase()}</p>
-          </div>
-          <p className="text-muted-foreground text-xs">{branding.logoName ?? "Logo gotowe"}</p>
-        </div>
-
-        <div className="border-border/60 bg-background/70 flex flex-col gap-2 rounded-md border p-4">
-          <div className="text-muted-foreground flex items-center gap-2 text-[10px] font-semibold tracking-[0.22em] uppercase">
-            <Users className="size-3.5" weight="duotone" />
-            Zespół
-          </div>
-          <p className="text-foreground text-sm font-semibold">
-            {team.invites.length} {team.invites.length === 1 ? "zaproszenie" : "zaproszeń"}
-          </p>
-          <p className="text-muted-foreground line-clamp-2 text-xs">
-            {team.invites
-              .slice(0, 3)
+      <div className="grid w-full gap-2 sm:grid-cols-3">
+        <SummaryCard
+          icon={<Buildings weight="regular" />}
+          label="Organizacja"
+          primary={organization.name.trim() || "—"}
+          secondary={`${findLabel(INDUSTRY_OPTIONS, organization.industry)} · ${findLabel(TEAM_SIZE_OPTIONS, organization.teamSize)}`}
+        />
+        <SummaryCard
+          icon={<Palette weight="regular" />}
+          label="Branding"
+          primary={branding.accentColor.toUpperCase()}
+          secondary={branding.logoName ?? "Logo gotowe"}
+          accent={branding.accentColor}
+          logo={branding.logoDataUrl}
+        />
+        <SummaryCard
+          icon={<Users weight="regular" />}
+          label="Zespół"
+          primary={`${team.invites.length} ${team.invites.length === 1 ? "zaproszenie" : "zaproszeń"}`}
+          secondary={
+            team.invites
+              .slice(0, 2)
               .map((invite) => `${invite.email} (${ROLE_LABEL[invite.role]})`)
-              .join(", ")}
-            {team.invites.length > 3 ? "…" : ""}
-          </p>
-        </div>
+              .join(", ") + (team.invites.length > 2 ? "…" : "")
+          }
+        />
       </div>
 
       <Button
         type="button"
-        size="lg"
-        className="h-11 w-full rounded-md text-sm font-semibold"
-        onClick={() => {
-          // Hard navigation so every SessionGate re-reads the now-fresh
-          // onboardingCompleted flag from the cookie-backed session.
-          window.location.assign("/dashboard");
-        }}
+        size="default"
+        className="w-full sm:w-auto sm:min-w-60"
+        onClick={() => window.location.assign("/dashboard")}
       >
         Wejdź do Cliently
-        <ArrowRight className="size-4" weight="bold" />
+        <ArrowRight weight="bold" />
       </Button>
+    </div>
+  );
+}
+
+function SummaryCard({
+  icon,
+  label,
+  primary,
+  secondary,
+  accent,
+  logo,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  primary: string;
+  secondary: string;
+  accent?: string;
+  logo?: string | null;
+}) {
+  return (
+    <div className="border-border bg-card flex flex-col items-start gap-2 rounded-md border p-4 text-left shadow-xs">
+      <div className="text-muted-foreground flex items-center gap-1.5 text-[11px] font-medium tracking-wider uppercase [&_svg]:size-3">
+        {icon}
+        {label}
+      </div>
+      <div className="flex items-center gap-2">
+        {accent ? (
+          <span
+            className="border-border relative inline-flex size-6 overflow-hidden rounded-md border"
+            style={{ backgroundColor: accent }}
+            aria-hidden
+          >
+            {logo ? (
+              <Image
+                src={logo}
+                alt=""
+                fill
+                sizes="24px"
+                className="object-contain p-0.5"
+                unoptimized
+              />
+            ) : null}
+          </span>
+        ) : null}
+        <p className="text-foreground text-[13px] font-semibold">{primary}</p>
+      </div>
+      <p className="text-muted-foreground line-clamp-2 text-[12px]">{secondary}</p>
     </div>
   );
 }

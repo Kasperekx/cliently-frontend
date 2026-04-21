@@ -38,9 +38,8 @@ function readableForeground(hex: string): string {
   const r = parseInt(normalized.slice(1, 3), 16);
   const g = parseInt(normalized.slice(3, 5), 16);
   const b = parseInt(normalized.slice(5, 7), 16);
-  // Relative luminance approximation
   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
-  return luminance > 0.6 ? "#1a1713" : "#ffffff";
+  return luminance > 0.6 ? "#111214" : "#ffffff";
 }
 
 export function StepBranding({ data, companyName, onChange }: StepBrandingProps) {
@@ -50,15 +49,10 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
   const [logoError, setLogoError] = useState<string | null>(null);
   const [hexDraft, setHexDraft] = useState<string>(data.accentColor);
 
-  const isPresetActive = ACCENT_PRESETS.some(
-    (preset) => preset.value.toLowerCase() === data.accentColor.toLowerCase()
-  );
-
   function handleFiles(files: FileList | null) {
     setLogoError(null);
     if (!files || files.length === 0) return;
     const file = files[0];
-
     if (!file.type.startsWith("image/")) {
       setLogoError("Wybierz plik graficzny (PNG, JPG, SVG).");
       return;
@@ -67,7 +61,6 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
       setLogoError("Maksymalny rozmiar pliku to 2 MB.");
       return;
     }
-
     const reader = new FileReader();
     reader.onload = () => {
       const result = reader.result;
@@ -122,10 +115,10 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
   const previewForeground = readableForeground(previewAccent);
 
   return (
-    <div className="grid gap-7 @md/field-group:grid-cols-[1.1fr_1fr]">
-      <FieldGroup className="gap-7">
+    <div className="grid gap-6 md:grid-cols-[1.1fr_1fr]">
+      <FieldGroup className="gap-6">
         <Field>
-          <FieldLabel className="text-foreground text-sm font-medium">Logo</FieldLabel>
+          <FieldLabel>Logo</FieldLabel>
           <FieldContent>
             <label
               htmlFor={`${formId}-logo`}
@@ -133,40 +126,39 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               className={cn(
-                "border-border/70 bg-background/70 hover:border-accent/50 hover:bg-background relative flex h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-md border border-dashed text-center transition-colors",
-                isDragging && "border-accent bg-accent/5"
+                "border-border bg-background relative flex h-28 cursor-pointer flex-col items-center justify-center gap-1.5 rounded-md border border-dashed text-center transition-colors duration-150",
+                "hover:border-foreground/20",
+                isDragging && "border-foreground/40 bg-muted/50"
               )}
             >
               {data.logoDataUrl ? (
                 <div className="flex items-center gap-3 px-4">
-                  <div className="border-border/70 bg-background relative size-14 overflow-hidden rounded-md border">
+                  <div className="border-border bg-background relative size-12 overflow-hidden rounded-md border">
                     <Image
                       src={data.logoDataUrl}
                       alt="Podgląd logo"
                       fill
-                      sizes="56px"
+                      sizes="48px"
                       className="object-contain p-1"
                       unoptimized
                     />
                   </div>
                   <div className="text-left">
-                    <p className="text-foreground text-sm font-medium">
+                    <p className="text-foreground text-[13px] font-medium">
                       {data.logoName ?? "Twoje logo"}
                     </p>
-                    <p className="text-muted-foreground text-xs">Kliknij, aby zmienić plik.</p>
+                    <p className="text-muted-foreground text-[12px]">Kliknij, aby zmienić.</p>
                   </div>
                 </div>
               ) : (
-                <div className="flex flex-col items-center gap-2">
-                  <span className="bg-accent/10 text-accent flex size-9 items-center justify-center rounded-full">
-                    <ImageSquare className="size-5" weight="duotone" />
+                <div className="flex flex-col items-center gap-1.5">
+                  <span className="border-border bg-background text-muted-foreground flex size-8 items-center justify-center rounded-md border">
+                    <ImageSquare weight="regular" className="size-4" />
                   </span>
-                  <p className="text-foreground text-sm font-medium">
+                  <p className="text-foreground text-[13px] font-medium">
                     Przeciągnij i upuść lub kliknij
                   </p>
-                  <p className="text-muted-foreground text-xs">
-                    PNG, JPG lub SVG, do 2 MB · zapis logo dodamy wkrótce
-                  </p>
+                  <p className="text-muted-foreground text-[11.5px]">PNG, JPG lub SVG, do 2 MB</p>
                 </div>
               )}
               <input
@@ -183,10 +175,10 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="text-muted-foreground hover:text-destructive mt-2 h-8 self-start rounded-md px-2 text-xs"
+                className="text-muted-foreground hover:text-destructive mt-2 self-start"
                 onClick={clearLogo}
               >
-                <Trash className="size-3.5" weight="duotone" />
+                <Trash weight="regular" />
                 Usuń logo
               </Button>
             ) : null}
@@ -195,9 +187,9 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
         </Field>
 
         <Field>
-          <FieldLabel className="text-foreground text-sm font-medium">Kolor akcentu</FieldLabel>
+          <FieldLabel>Kolor akcentu</FieldLabel>
           <div
-            className="mt-2 flex flex-wrap items-center gap-3"
+            className="mt-1 flex flex-wrap items-center gap-2"
             role="radiogroup"
             aria-label="Kolor akcentu"
           >
@@ -212,11 +204,11 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
                   aria-label={preset.label}
                   title={preset.label}
                   className={cn(
-                    "relative size-9 rounded-full border border-black/10 transition-all",
-                    "focus-visible:ring-accent/50 focus-visible:ring-2 focus-visible:outline-none",
+                    "relative size-7 rounded-full border transition-transform duration-150",
+                    "focus-visible:ring-ring/40 focus-visible:ring-2 focus-visible:outline-none",
                     active
-                      ? "ring-accent shadow-sm ring-2 ring-offset-2 ring-offset-[var(--background)]"
-                      : "hover:scale-105"
+                      ? "border-foreground ring-foreground ring-offset-background ring-2 ring-offset-2"
+                      : "border-black/10 hover:scale-110"
                   )}
                   style={{ backgroundColor: preset.value }}
                 />
@@ -224,9 +216,9 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
             })}
           </div>
           <FieldContent className="mt-3">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2">
               <span
-                className="border-border/70 size-9 rounded-md border"
+                className="border-border size-9 rounded-md border"
                 style={{ backgroundColor: previewAccent }}
                 aria-hidden
               />
@@ -237,38 +229,27 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
                 inputMode="text"
                 autoComplete="off"
                 spellCheck={false}
-                className={cn(
-                  "border-border/70 bg-background/80 h-10 max-w-40 rounded-md px-3 font-mono text-sm uppercase",
-                  !HEX_COLOR_REGEX.test(hexDraft) && "border-destructive/60"
-                )}
+                aria-invalid={!HEX_COLOR_REGEX.test(hexDraft)}
+                className="h-9 max-w-40 font-mono uppercase"
               />
-              {!isPresetActive && HEX_COLOR_REGEX.test(hexDraft) ? (
-                <span className="text-muted-foreground text-xs">Własny odcień</span>
-              ) : null}
             </div>
           </FieldContent>
-          <FieldDescription>
-            Użyjemy tego koloru w portalach klientów, e-mailach i CTA.
-          </FieldDescription>
+          <FieldDescription>Używany w portalach klientów, e-mailach i CTA.</FieldDescription>
         </Field>
       </FieldGroup>
 
-      <div className="border-border/60 bg-background/70 relative flex flex-col gap-4 rounded-xl border p-5 shadow-sm">
+      <div className="border-border bg-card flex flex-col gap-3 rounded-lg border p-5 shadow-xs">
         <div className="flex items-center justify-between gap-3">
-          <span className="text-muted-foreground bg-background border-border/60 inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-[10px] font-medium tracking-[0.22em] uppercase">
-            <span className="bg-accent size-1.5 rounded-full" />
-            Live preview
-          </span>
+          <p className="text-muted-foreground text-[11px] font-medium tracking-wider uppercase">
+            Podgląd
+          </p>
           <span className="text-muted-foreground text-[11px]">Portal klienta</span>
         </div>
 
-        <div
-          className="border-border/70 bg-background flex flex-col gap-4 overflow-hidden rounded-lg border p-4"
-          style={{ ["--brand" as string]: previewAccent }}
-        >
+        <div className="border-border bg-background flex flex-col gap-4 overflow-hidden rounded-md border p-4">
           <div className="flex items-center gap-3">
             <div
-              className="relative flex size-10 shrink-0 items-center justify-center overflow-hidden rounded-md text-sm font-semibold"
+              className="relative flex size-9 shrink-0 items-center justify-center overflow-hidden rounded-md text-[12.5px] font-semibold"
               style={{ backgroundColor: previewAccent, color: previewForeground }}
             >
               {data.logoDataUrl ? (
@@ -276,7 +257,7 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
                   src={data.logoDataUrl}
                   alt=""
                   fill
-                  sizes="40px"
+                  sizes="36px"
                   className="object-contain p-1"
                   unoptimized
                 />
@@ -285,35 +266,31 @@ export function StepBranding({ data, companyName, onChange }: StepBrandingProps)
               )}
             </div>
             <div className="flex flex-col">
-              <span className="text-foreground text-sm font-semibold tracking-tight">
+              <span className="text-foreground text-[13px] font-semibold tracking-tight">
                 {previewName}
               </span>
-              <span className="text-muted-foreground text-[11px]">Witamy w portalu</span>
+              <span className="text-muted-foreground text-[11.5px]">Witamy w portalu</span>
             </div>
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-1.5">
             <div
-              className="h-2 w-full rounded-full opacity-25"
-              style={{ backgroundColor: previewAccent }}
+              className="h-1.5 w-full rounded-full"
+              style={{ backgroundColor: previewAccent, opacity: 0.2 }}
             />
-            <div className="bg-muted/60 h-2 w-3/5 rounded-full" />
-            <div className="bg-muted/60 h-2 w-2/5 rounded-full" />
+            <div className="bg-muted h-1.5 w-3/5 rounded-full" />
+            <div className="bg-muted h-1.5 w-2/5 rounded-full" />
           </div>
 
           <button
             type="button"
             disabled
-            className="inline-flex h-9 items-center justify-center rounded-md px-4 text-xs font-semibold tracking-tight"
+            className="inline-flex h-8 items-center justify-center rounded-md px-3 text-[12.5px] font-semibold tracking-tight"
             style={{ backgroundColor: previewAccent, color: previewForeground }}
           >
             Otwórz brief
           </button>
         </div>
-
-        <p className="text-muted-foreground text-[11px] leading-relaxed">
-          Tak Twoja marka będzie wyglądać w mailach, portalu klienta i widokach publicznych.
-        </p>
       </div>
     </div>
   );

@@ -5,14 +5,6 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Warning } from "@phosphor-icons/react";
 
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
 import { ApiError, apiFetch } from "@/lib/api";
 import { getSession } from "@/lib/auth-client";
 import { slugify } from "@/lib/slug";
@@ -28,24 +20,21 @@ type FlowState = StepKey | "done";
 
 const STEP_ORDER: StepKey[] = ["organization", "branding", "team"];
 
-const STEP_COPY: Record<StepKey, { eyebrow: string; title: string; description: string }> = {
+const STEP_COPY: Record<StepKey, { title: string; description: string }> = {
   organization: {
-    eyebrow: "Krok 1 z 3",
     title: "Powiedz nam o organizacji",
     description:
       "Te trzy informacje pozwolą nam dostosować Cliently do tego, jak pracujesz z klientami.",
   },
   branding: {
-    eyebrow: "Krok 2 z 3",
-    title: "Ubierz Cliently w swoją markę",
+    title: "Dopasuj markę",
     description:
       "Kolor akcentu pojawi się w portalach klientów i wiadomościach wysyłanych z aplikacji. Logo dodamy, gdy włączymy zapis plików.",
   },
   team: {
-    eyebrow: "Krok 3 z 3",
-    title: "Zaproś swój zespół",
+    title: "Zaproś zespół",
     description:
-      "Opcjonalnie — dodaj osoby do swojej przestrzeni. Zaproszenia zostaną wysłane po zakończeniu konfiguracji.",
+      "Opcjonalnie — dodaj osoby do swojej przestrzeni. Zaproszenia wyślemy po zakończeniu konfiguracji.",
   },
 };
 
@@ -57,10 +46,7 @@ function createInitialData(): OnboardingData {
   };
 }
 
-type CompleteResponse = {
-  organizationId: string;
-  slug: string;
-};
+type CompleteResponse = { organizationId: string; slug: string };
 
 function buildCompletePayload(data: OnboardingData) {
   return {
@@ -70,9 +56,7 @@ function buildCompletePayload(data: OnboardingData) {
       industry: data.organization.industry ?? undefined,
       teamSize: data.organization.teamSize ?? undefined,
     },
-    branding: {
-      accentColor: data.branding.accentColor,
-    },
+    branding: { accentColor: data.branding.accentColor },
     team: {
       invites: data.team.invites.map((invite) => ({
         email: invite.email.trim().toLowerCase(),
@@ -113,7 +97,6 @@ export function OnboardingFlow() {
       setSubmitError("Nazwa organizacji musi zawierać litery lub cyfry (minimum 2 znaki).");
       return;
     }
-
     setSubmitError(null);
     startTransition(async () => {
       try {
@@ -121,14 +104,11 @@ export function OnboardingFlow() {
           method: "POST",
           json: buildCompletePayload(data),
         });
-        // Refresh better-auth's cached session so onboardingCompleted=true
-        // is visible to every useSession() consumer before we redirect.
         await getSession();
         setState("done");
       } catch (error) {
         if (error instanceof ApiError) {
           if (error.status === 409) {
-            // User already onboarded — zip straight to dashboard.
             router.replace("/dashboard");
             return;
           }
@@ -148,18 +128,9 @@ export function OnboardingFlow() {
 
   function goNext() {
     if (!isValid || isSubmitting) return;
-
-    if (state === "organization") {
-      setState("branding");
-      return;
-    }
-    if (state === "branding") {
-      setState("team");
-      return;
-    }
-    if (state === "team") {
-      finalize();
-    }
+    if (state === "organization") setState("branding");
+    else if (state === "branding") setState("team");
+    else if (state === "team") finalize();
   }
 
   function goBack() {
@@ -175,109 +146,83 @@ export function OnboardingFlow() {
         : "Zakończ konfigurację"
       : "Dalej";
 
-  return (
-    <Card className="shadow-card border-border/70 bg-card/95 w-full overflow-hidden rounded-xl border backdrop-blur-sm">
-      <div className="from-accent/8 via-background to-background bg-linear-to-b">
-        <CardHeader className="px-6 pt-6 pb-5 sm:px-8">
-          <div className="flex items-center justify-between gap-3">
-            <span className="text-muted-foreground bg-background/80 border-border/60 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-[10px] font-medium tracking-[0.22em] uppercase">
-              <span className="bg-accent size-1.5 rounded-full" />
-              Onboarding
-            </span>
-            {state !== "done" ? (
-              <span className="text-muted-foreground text-[11px]">
-                {STEP_COPY[currentStep].eyebrow}
-              </span>
-            ) : null}
-          </div>
+  const currentIndex = STEP_ORDER.indexOf(currentStep);
 
-          <div className="mt-6">
-            <OnboardingStepper
-              current={currentStep}
-              completed={state === "done" ? STEP_ORDER : completed}
-            />
-          </div>
-
-          {state !== "done" ? (
-            <div className="mt-6">
-              <CardTitle className="text-[1.5rem] font-semibold tracking-tight sm:text-[1.75rem]">
-                {STEP_COPY[currentStep].title}
-              </CardTitle>
-              <CardDescription className="mt-2 max-w-md text-sm leading-relaxed">
-                {STEP_COPY[currentStep].description}
-              </CardDescription>
-            </div>
-          ) : null}
-        </CardHeader>
-
-        <CardContent className="px-6 pb-6 sm:px-8">
-          <div key={state} className="animate-in fade-in slide-in-from-right-2 duration-400">
-            {state === "organization" ? (
-              <StepOrganization
-                data={data.organization}
-                onChange={(organization) => setData({ ...data, organization })}
-              />
-            ) : null}
-
-            {state === "branding" ? (
-              <StepBranding
-                data={data.branding}
-                companyName={data.organization.name}
-                onChange={(branding) => setData({ ...data, branding })}
-              />
-            ) : null}
-
-            {state === "team" ? (
-              <StepTeam data={data.team} onChange={(team) => setData({ ...data, team })} />
-            ) : null}
-
-            {state === "done" ? <OnboardingSuccess data={data} /> : null}
-          </div>
-
-          {submitError && state !== "done" ? (
-            <div
-              role="alert"
-              className="border-destructive/40 bg-destructive/5 text-destructive mt-5 flex items-start gap-2 rounded-md border px-3 py-2 text-xs"
-            >
-              <Warning className="mt-0.5 size-4 shrink-0" weight="duotone" />
-              <span>{submitError}</span>
-            </div>
-          ) : null}
-        </CardContent>
-
-        {state !== "done" ? (
-          <CardFooter className="border-border/60 bg-background/80 flex items-center justify-between gap-3 border-t px-6 py-5 sm:px-8">
-            {state !== "organization" ? (
-              <Button
-                type="button"
-                variant="ghost"
-                size="lg"
-                disabled={isSubmitting}
-                className="text-muted-foreground hover:text-foreground h-11 rounded-md px-3 text-sm"
-                onClick={goBack}
-              >
-                <ArrowLeft className="size-4" weight="bold" />
-                Wstecz
-              </Button>
-            ) : (
-              <span className="text-muted-foreground text-xs">
-                Możesz wrócić do tych ustawień później w Cliently.
-              </span>
-            )}
-
-            <Button
-              type="button"
-              size="lg"
-              className="h-11 min-w-40 rounded-md text-sm font-semibold"
-              onClick={goNext}
-              disabled={!isValid || isSubmitting}
-            >
-              {isSubmitting ? "Zapisywanie..." : primaryLabel}
-              {!isSubmitting ? <ArrowRight className="size-4" weight="bold" /> : null}
-            </Button>
-          </CardFooter>
-        ) : null}
+  if (state === "done") {
+    return (
+      <div className="flex flex-col gap-8">
+        <OnboardingStepper current="team" completed={STEP_ORDER} />
+        <OnboardingSuccess data={data} />
       </div>
-    </Card>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-8">
+      <div className="flex items-center justify-between gap-3">
+        <OnboardingStepper current={currentStep} completed={completed} />
+        <span className="text-muted-foreground text-[12px] tabular-nums" data-slot="numeric">
+          Krok {currentIndex + 1} z {STEP_ORDER.length}
+        </span>
+      </div>
+
+      <header className="flex flex-col gap-1.5">
+        <h1 className="text-foreground text-[24px] leading-tight font-semibold tracking-tight">
+          {STEP_COPY[currentStep].title}
+        </h1>
+        <p className="text-muted-foreground max-w-lg text-[13px] leading-relaxed">
+          {STEP_COPY[currentStep].description}
+        </p>
+      </header>
+
+      <section key={state} className="animate-in fade-in slide-in-from-right-1 duration-200">
+        {state === "organization" ? (
+          <StepOrganization
+            data={data.organization}
+            onChange={(organization) => setData({ ...data, organization })}
+          />
+        ) : null}
+
+        {state === "branding" ? (
+          <StepBranding
+            data={data.branding}
+            companyName={data.organization.name}
+            onChange={(branding) => setData({ ...data, branding })}
+          />
+        ) : null}
+
+        {state === "team" ? (
+          <StepTeam data={data.team} onChange={(team) => setData({ ...data, team })} />
+        ) : null}
+      </section>
+
+      {submitError ? (
+        <div
+          role="alert"
+          className="border-destructive/40 bg-destructive/5 text-destructive flex items-start gap-2 rounded-md border px-3 py-2 text-[12.5px]"
+        >
+          <Warning className="mt-0.5 size-4 shrink-0" weight="regular" />
+          <span>{submitError}</span>
+        </div>
+      ) : null}
+
+      <div className="border-border flex items-center justify-between gap-3 border-t pt-6">
+        {state !== "organization" ? (
+          <Button type="button" variant="ghost" onClick={goBack} disabled={isSubmitting}>
+            <ArrowLeft weight="bold" />
+            Wstecz
+          </Button>
+        ) : (
+          <span className="text-muted-foreground text-[12.5px]">
+            Ustawienia można zmienić później w Cliently.
+          </span>
+        )}
+
+        <Button type="button" onClick={goNext} disabled={!isValid || isSubmitting}>
+          {isSubmitting ? "Zapisywanie…" : primaryLabel}
+          {!isSubmitting ? <ArrowRight weight="bold" /> : null}
+        </Button>
+      </div>
+    </div>
   );
 }
